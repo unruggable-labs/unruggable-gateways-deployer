@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unruggable Gateways Deployer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="icons/logo-black.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="icons/full-logo-black.png" alt="Unruggable Gateways" title="Unruggable Gateways" style="width:200px;">
+            <h1>Gateway Deployer</h1>
+            <p>Deploy an operational <a href="https://github.com/unruggable-labs/unruggable-gateways" target="_blank">Unruggable Gateways</a> instance for your favourite L2 blockchain.</p>
+        </header>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-step active" data-step="1">
+                <div class="progress-circle">1</div>
+                <span class="progress-label">API Keys</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step" data-step="2">
+                <div class="progress-circle">2</div>
+                <span class="progress-label">Configure</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step" data-step="3">
+                <div class="progress-circle">3</div>
+                <span class="progress-label">Deploy</span>
+            </div>
+        </div>
+
+        <div class="steps-container">
+            
+            <!-- Step 1: API Key Validation -->
+            <div class="step" id="step1">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h2>API Keys & Configuration</h2>
+                </div>
+                <div class="step-content">
+                    <div class="info-box">
+                        <div class="info-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Hetzner Cloud Account Required</h4>
+                            <p>This deployer creates servers using <a href="https://www.hetzner.com/cloud" target="_blank" rel="noopener noreferrer">Hetzner Cloud</a>. You'll need to:</p>
+                            <ol>
+                                <li>Create a <a href="https://console.hetzner.cloud/" target="_blank" rel="noopener noreferrer">Hetzner Cloud account</a></li>
+                                <li>Add a payment method to your account</li>
+                                <li>Generate an <a href="https://docs.hetzner.com/cloud/api/getting-started/generating-api-token/" target="_blank" rel="noopener noreferrer">API token</a></li>                              
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="apiKey">Hetzner API Key</label>
+                        <div class="input-group">
+                            <input type="password" id="apiKey" placeholder="Enter your Hetzner API key">
+                            <button type="button" id="toggleApiKey" class="toggle-btn">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <small class="help-text">Your API key will be used to create and manage servers</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rpcProvider">RPC Provider</label>
+                        <select id="rpcProvider">
+                            <option value="">Choose an RPC provider</option>
+                            <option value="drpc">dRPC</option>
+                            <option value="infura">Infura</option>
+                            <option value="alchemy">Alchemy</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group hidden" id="rpcApiKeyGroup">
+                        <label for="rpcApiKey" id="rpcApiKeyLabel">RPC Provider API Key</label>
+                        <div class="input-group">
+                            <input type="password" id="rpcApiKey" placeholder="Enter your RPC provider API key">
+                            <button type="button" id="toggleRpcApiKey" class="toggle-btn">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <small class="help-text" id="rpcApiKeyHelp">Your API key will be used to connect to the blockchain</small>
+                    </div>
+                    
+                    <button id="validateApiKey" class="btn btn-primary" disabled>
+                        <span class="btn-text">Validate API Key</span>
+                        <div class="spinner hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                    <div id="apiKeyStatus" class="status-message"></div>
+                </div>
+            </div>
+
+            <!-- Step 2: Server Configuration -->
+            <div class="step hidden" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h2>Server Configuration</h2>
+                </div>
+                <div class="step-content">
+                    <div class="form-group">
+                        <label for="serverType">Server Type</label>
+                        <select id="serverType" disabled>
+                            <option value="">Loading server types...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="releaseTag">Unruggable Gateways Release Tag</label>
+                        <select id="releaseTag" disabled>
+                            <option value="">Loading releases...</option>
+                        </select>
+                        <div id="releaseNotesLink" class="release-notes hidden">
+                            <a href="#" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-external-link-alt"></i>
+                                View Release Notes
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="toggle-row">
+                            <label for="chainSelect" class="toggle-row-label">Select a Chain</label>
+                            <div class="toggle-group">
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="testnetToggle">
+                                    <span class="toggle-slider"></span>
+                                    <span class="toggle-text">Testnet</span>
+                                </label>
+                            </div>
+                        </div>
+                        <select id="chainSelect">
+                            <option value="">Choose a blockchain</option>
+                            <option value="arbitrum">Arbitrum</option>
+                            <option value="base">Base</option>
+                            <option value="linea">Linea</option>
+                            <option value="optimism">Optimism</option>
+                            <option value="scroll">Scroll</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="serverName">Server Name (Optional)</label>
+                        <input type="text" id="serverName" placeholder="my-gateway-server">
+                    </div>
+                    <button id="continueToReview" class="btn btn-primary" disabled>
+                        <span class="btn-text">Continue to Review</span>
+                    </button>
+                    <div id="configurationStatus" class="status-message"></div>
+                </div>
+            </div>
+
+            <!-- Step 3: Review/Deploy -->
+            <div class="step hidden" id="step3">
+                <!-- Review State -->
+                <div id="reviewState">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h2>Review Deployment</h2>
+                    </div>
+                    <div class="step-content">
+                        <div class="review-card">
+                            <h3>Deployment Configuration</h3>
+                            <div class="review-details">
+                                <div class="review-item">
+                                    <label>Chain:</label>
+                                    <span id="reviewChain">-</span>
+                                </div>
+                                <div class="review-item">
+                                    <label>Server Type:</label>
+                                    <span id="reviewServerType">-</span>
+                                </div>
+                                <div class="review-item">
+                                    <label>Release Tag:</label>
+                                    <span id="reviewReleaseTag">-</span>
+                                </div>
+                                <div class="review-item">
+                                    <label>Server Name:</label>
+                                    <span id="reviewServerName">-</span>
+                                </div>
+                            </div>
+                            
+                            <div class="user-data-section">
+                                <h4>User Data Script</h4>
+                                <div class="user-data-code">
+                                    <pre id="userDataPreview"></pre>
+                                </div>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button id="backToConfig" class="btn btn-outline">Back to Configuration</button>
+                                <button id="deployServer" class="btn btn-success">
+                                    <span class="btn-text">Deploy Server</span>
+                                    <div class="spinner hidden">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </div>
+                                </button>
+                            </div>
+                            <div id="deployStatus" class="status-message"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deployment Complete State -->
+                <div id="deploymentCompleteState" class="hidden">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h2>Deployment Complete</h2>
+                    </div>
+                    <div class="step-content">
+                        <div class="success-card">
+                            <div class="success-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <h3>Server Deployed Successfully!</h3>
+                            <div class="server-info">
+                                <div class="info-item">
+                                    <label>Server IP:</label>
+                                    <div class="value-container">
+                                        <span id="serverIP" class="ip-address">Loading...</span>
+                                        <button id="copyIP" class="copy-btn">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Root Password:</label>
+                                    <div class="value-container">
+                                        <span id="rootPassword" class="password-text">Loading...</span>
+                                        <button id="copyPassword" class="copy-btn">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Server Name:</label>
+                                    <div class="value-container">
+                                        <span id="deployedServerName">-</span>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Server Type:</label>
+                                    <div class="value-container">
+                                        <span id="deployedServerType">-</span>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Release Tag:</label>
+                                    <div class="value-container">
+                                        <span id="deployedReleaseTag">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="action-buttons hidden" id="actionButtons">
+                                <button id="deployAnother" class="btn btn-outline">Deploy Another Server</button>
+                                <a id="sshLink" href="#" target="_blank" class="btn btn-primary">
+                                    <i class="fas fa-terminal"></i> SSH Connect
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

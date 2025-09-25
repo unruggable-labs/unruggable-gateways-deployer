@@ -1,0 +1,36 @@
+{
+  "name": "unruggable-gateways-deployer",
+  "version": "1.0.0",
+  "description": "A simple web application for deploying Unruggable Gateway instances to Hetzner Cloud servers",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "start:python2": "python -m SimpleHTTPServer 8000",
+    "start:node": "npx http-server -p 8000",
+    "dev": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "unruggable",
+    "gateways",
+    "unruggable-gateways",
+    "hetzner",
+    "cloud",
+    "deployment",
+    "github",
+    "server",
+    "automation"
+  ],
+  "author": "Thomas Clowes",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unruggable-labs/unruggable-gateways-deployer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/unruggable-labs/unruggable-gateways-deployer/issues"
+  },
+  "homepage": "https://github.com/unruggable-labs/unruggable-gateways-deployer#readme"
+}
