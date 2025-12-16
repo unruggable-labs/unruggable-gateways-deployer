@@ -613,8 +613,19 @@ function createUserDataScript(releaseTag, release) {
     // Return the user data script
     return `#!/bin/bash
 
-# Install Bun using snap (non-interactive)
-snap install bun-js
+# Update the package manager
+apt-get update
+# Install unzip
+apt-get install -y unzip
+
+# Set HOME for root user (required for bun installer)
+export HOME=/root
+
+# Install Bun v1.1.26 using official installer
+curl -fsSL https://bun.sh/install | bash -s "bun-v1.1.26"
+
+# Add bun to PATH
+export PATH="$HOME/.bun/bin:$PATH"
 
 # E.T. go home
 cd /home
@@ -622,14 +633,14 @@ cd /home
 # Clone the repository
 git clone https://github.com/${GITHUB_REPO.owner}/${GITHUB_REPO.repo}.git
 
-# Checkout the specific release
-git checkout ${releaseTag}
-
 # Move to Unruggable Gateways directory
 cd /home/unruggable-gateways
 
+# Checkout the specific release
+git checkout ${releaseTag}
+
 # Install dependencies
-/snap/bin/bun install
+bun install
 
 # Create .env file with RPC provider configuration
 cat > /home/unruggable-gateways/.env << EOF
@@ -649,7 +660,8 @@ Group=root
 StandardOutput=syslog
 StandardError=syslog
 Restart=always
-ExecStart=/usr/bin/screen -dm -S unruggable-gateways /bin/bash -c 'cd /home/unruggable-gateways/ && /snap/bin/bun run /home/unruggable-gateways/scripts/serve.ts ${gatewayName} ${port} ${args}'
+Environment="PATH=/root/.bun/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ExecStart=/usr/bin/screen -dm -S unruggable-gateways /bin/bash -c 'cd /home/unruggable-gateways/ && bun run /home/unruggable-gateways/scripts/serve.ts ${gatewayName} ${port} ${args}'
 
 [Install]
 WantedBy=multi-user.target
